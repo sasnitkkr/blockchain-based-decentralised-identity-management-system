@@ -4,7 +4,7 @@
 * Employee verification/Check
 */
 
-pragma solidity 0.8.18;
+pragma solidity 0.5.16;
 pragma experimental ABIEncoderV2;
 
 contract Defence{
@@ -19,42 +19,38 @@ contract Defence{
     address admin;
     mapping(string=>Employee) public currentEmployees;
 
-    constructor(){
+    constructor() public{
         admin=msg.sender;
     }
 
-    modifier restricted(){
-        require(msg.sender == admin);
-        _;
-    }
 
-    function addEmployees(Employee[] memory employee) public restricted{
-        uint i=0;
-        for(i=0; i<employee.length; i++){
-            bytes32 encryptedAdmin = sha256(abi.encodePacked(admin));
-            bytes memory empId = bytes(employee[i].empId);
-            Rank empRank = employee[i].empRank;
-            bytes memory ihash = abi.encodePacked(empId,empRank);
-            string memory key = string(abi.encodePacked(ihash, encryptedAdmin));
-            currentEmployees[key] = employee[i];
-        }
-    }
-
-    function verifyEmployee(Employee memory employee) public view returns (Employee memory){
+    function addEmployee(string memory _empId, Rank _empRank) public {
+        Employee memory _employee = Employee(_empId, _empRank);
         bytes32 encryptedAdmin = sha256(abi.encodePacked(admin));
-        bytes memory empId = bytes(employee.empId);
-        Rank empRank = employee.empRank;
-        bytes memory ihash = abi.encodePacked(empId,empRank);
-        string memory key = string(abi.encodePacked(ihash, encryptedAdmin));
-        return currentEmployees[key];
+        bytes memory _eId = bytes(_employee.empId);
+        Rank eRank = _employee.empRank;
+        bytes memory _ihash = abi.encodePacked(_eId, eRank);
+        string memory _key = string(abi.encodePacked(_ihash, encryptedAdmin));
+        currentEmployees[_key] = _employee;
     }
 
-    function removeEmployee(Employee memory employee) public restricted{
+    function verifyEmployee(string memory _empId, Rank _empRank) public view returns (Employee memory){
+        Employee memory _employee = Employee(_empId, _empRank);
         bytes32 encryptedAdmin = sha256(abi.encodePacked(admin));
-        bytes memory empId = bytes(employee.empId);
-        Rank empRank = employee.empRank;
-        bytes memory ihash = abi.encodePacked(empId,empRank);
-        string memory key = string(abi.encodePacked(ihash, encryptedAdmin));
-        delete(currentEmployees[key]);
+        bytes memory _eId = bytes(_employee.empId);
+        Rank eRank = _employee.empRank;
+        bytes memory _ihash = abi.encodePacked(_eId, eRank);
+        string memory _key = string(abi.encodePacked(_ihash, encryptedAdmin));
+        return currentEmployees[_key];
+    }
+
+    function removeEmployee(string memory _empId, Rank _empRank) public {
+        Employee memory _employee = Employee(_empId, _empRank);
+        bytes32 encryptedAdmin = sha256(abi.encodePacked(admin));
+        bytes memory _eId = bytes(_employee.empId);
+        Rank eRank = _employee.empRank;
+        bytes memory _ihash = abi.encodePacked(_eId, eRank);
+        string memory _key = string(abi.encodePacked(_ihash, encryptedAdmin));
+        delete(currentEmployees[_key]);
     } 
 }

@@ -11,87 +11,58 @@ import Navbar from "./Navbar";
 import { hashString } from "./../utils/hashUtils";
 // import web3 from '../web3';
 // import univContract from '../eth/helper/univContract';
+import {
+  addStudent,
+  verifyStudent,
+  removeStudent,
+} from "../data_providers/university_data_provider";
+import { useEffect } from "react";
 
 const UniversityOps = (props) => {
-  const sanitizeBulkData = (values) => {
-    // remove newline characters
-    values = values.replace(/(\r\n|\n|\r)/gm, "");
-    // split/delimit acc. to commas
-    values = values.split(",");
-    // remove extra whitespaces from each roll no.
-    values = values.map((item) => {
-      return item.trim();
-    });
-    // remove empty roll noseg: 3, ,4
-    values = values.filter((item) => {
-      return item !== "";
-    });
-    return values;
+  const [name, setName] = useState();
+  const [age, setAge] = useState();
+  const [roll, setRoll] = useState();
+  const [verificationStatus, setVerificationStatus] = useState(2);
+  const [message, setMessage] = useState();
+  const addStudentJS = async () => {
+    // console.log(name, age, roll);
+    try {
+      // setMessage("");
+      await addStudent(name, age, roll);
+      setName("");
+      setAge("");
+      setRoll("");
+      setMessage("Enrollment Successful");
+    } catch (err) {
+      console.log(err.message);
+      setMessage(err.message);
+    }
   };
-
-  const [data, setData] = useState({
-    rollNo: "",
-    rollNoCheckStatus: "none",
-    bulkRollNos: "",
-    bulkDataProcessingStatus: "none",
-    rollNoCheckResult: "",
-  });
-
-  const handleChange = (e) => {
-    setData({ ...data, [e.target.name]: e.target.value });
+  const removeStudentJS = async () => {
+    // console.log(name, age, roll);
+    try {
+      // setMessage("");
+      await removeStudent(name, age, roll);
+      setName("");
+      setAge("");
+      setRoll("");
+      setMessage("Student removed successfully");
+    } catch (err) {
+      console.log(err.message);
+      setMessage(err.message);
+    }
   };
-
-  const handleBulkAddRollNos = async (e) => {
-    e.preventDefault();
-    const rollNoList = sanitizeBulkData(data.bulkRollNos);
-    if (rollNoList.length === 0) {
-      return;
-    }
-    let studentdb = localStorage.getItem("students");
-    let newStudentdb = {};
-    if (studentdb) {
-      studentdb = JSON.parse(studentdb);
-      newStudentdb = studentdb;
-    }
-    rollNoList.map((rollNo) => {
-      return (newStudentdb[hashString(rollNo)] = true);
-    });
-    newStudentdb = JSON.stringify(newStudentdb);
-    localStorage.setItem("students", newStudentdb);
-  };
-
-  const handleBulkRemoveRollNos = async (e) => {
-    e.preventDefault();
-    const rollNoList = sanitizeBulkData(data.bulkRollNos);
-    if (rollNoList.length === 0) {
-      return;
-    }
-    let studentdb = localStorage.getItem("students");
-    if (!studentdb) {
-      // no student in list
-      return;
-    }
-    studentdb = JSON.parse(studentdb);
-    rollNoList.map((rollNo) => {
-      return delete studentdb[hashString(rollNo)];
-    });
-    studentdb = JSON.stringify(studentdb);
-    localStorage.setItem("students", studentdb);
-  };
-
-  const handleCheckRollNo = async (e) => {
-    e.preventDefault();
-    const rollNoToCheck = data.rollNo.trim();
-    let studentdb = localStorage.getItem("students");
-    if (!studentdb) {
-      setData({ ...data, rollNoCheckResult: "NO" });
-    }
-    studentdb = JSON.parse(studentdb);
-    if (studentdb[hashString(rollNoToCheck)] === true) {
-      setData({ ...data, rollNoCheckResult: "YES" });
-    } else {
-      setData({ ...data, rollNoCheckResult: "NO" });
-    }
+  const verifyStudentJS = async () => {
+    const status = await verifyStudent(name, age, roll);
+    // setErrorMessage("e1");
+    console.log("-----------------------");
+    console.log(status);
+    console.log("-----------------------");
+    if (status === true) setMessage("Student enrolled");
+    else setMessage("Student not enrolled");
+    setName("");
+    setAge("");
+    setRoll("");
   };
 
   return (
@@ -111,23 +82,55 @@ const UniversityOps = (props) => {
             <Grid container spacing={1}>
               <Grid xs={12} sm={6} item>
                 <TextField
-                  name="bulkRollNos"
-                  onChange={handleChange}
+                  required
+                  name="name"
                   type="text"
-                  value={data.bulkRollNos}
-                  label="Enter list of Roll numbers to add/Remove"
-                  placeholder="3072,3073,3074..."
-                  variant="outlined"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   style={{ maxWidth: 600 }}
+                  variant="outlined"
                   fullWidth
                   id="fullWidth"
-                  rows={4}
-                  multiline
+                  //   fullWidth='true'
+                  label="Enter Name"
+                  placeholder="Enter Name to add student"
+                />
+              </Grid>
+              <Grid xs={12} sm={6} item>
+                <TextField
+                  required
+                  name="age"
+                  type="number"
+                  value={age}
+                  onChange={(e) => setAge(e.target.value)}
+                  style={{ maxWidth: 600 }}
+                  variant="outlined"
+                  fullWidth
+                  id="fullWidth"
+                  //   fullWidth='true'
+                  label="Enter Age"
+                  placeholder="Enter age to add student"
+                />
+              </Grid>
+              <Grid xs={12} sm={6} item>
+                <TextField
+                  required
+                  name="roll"
+                  type="text"
+                  value={roll}
+                  onChange={(e) => setRoll(e.target.value)}
+                  style={{ maxWidth: 600 }}
+                  variant="outlined"
+                  fullWidth
+                  id="fullWidth"
+                  //   fullWidth='true'
+                  label="Enter Roll Number"
+                  placeholder="Enter Roll No.to add student"
                 />
               </Grid>
               <Grid xs={12} item>
                 <Button
-                  onClick={handleBulkAddRollNos}
+                  onClick={addStudentJS}
                   variant="contained"
                   color="primary"
                   //   fullWidth='true'
@@ -139,7 +142,7 @@ const UniversityOps = (props) => {
               </Grid>
               <Grid xs={12} item>
                 <Button
-                  onClick={handleBulkRemoveRollNos}
+                  onClick={removeStudentJS}
                   variant="contained"
                   color="primary"
                   //   fullWidth='true'
@@ -149,24 +152,9 @@ const UniversityOps = (props) => {
                   Delist Roll Numbers
                 </Button>
               </Grid>
-              <Grid xs={12} sm={6} item>
-                <TextField
-                  name="rollNo"
-                  type="text"
-                  value={data.rollNo}
-                  onChange={handleChange}
-                  style={{ maxWidth: 600 }}
-                  variant="outlined"
-                  fullWidth
-                  id="fullWidth"
-                  //   fullWidth='true'
-                  label="Enter Roll Number"
-                  placeholder="Enter Roll No. to verify student enrollment"
-                />
-              </Grid>
               <Grid xs={12} item>
                 <Button
-                  onClick={handleCheckRollNo}
+                  onClick={verifyStudentJS}
                   variant="contained"
                   color="primary"
                   fullWidth
@@ -175,7 +163,7 @@ const UniversityOps = (props) => {
                   Check Enrollment Status
                 </Button>
               </Grid>
-              {data.rollNoCheckResult === "YES" && (
+              {/* {verificationStatus === 1 && (
                 <Typography
                   component="p"
                   variant="body2"
@@ -184,8 +172,18 @@ const UniversityOps = (props) => {
                 >
                   Student is enrolled
                 </Typography>
+              )} */}
+              {message && (
+                <Typography
+                  component="p"
+                  variant="body2"
+                  color="textSecondary"
+                  style={{ color: "blue" }}
+                >
+                  {message}
+                </Typography>
               )}
-              {data.rollNoCheckResult === "NO" && (
+              {/* {verificationStatus === 0 && (
                 <Typography
                   component="p"
                   variant="body2"
@@ -195,6 +193,26 @@ const UniversityOps = (props) => {
                   Student is NOT enrolled
                 </Typography>
               )}
+              {errorMessage === "success" && (
+                <Typography
+                  component="p"
+                  variant="body2"
+                  color="textSecondary"
+                  style={{ color: "green" }}
+                >
+                  Student enrollment successful
+                </Typography>
+              )}
+              {errorMessage !== "e1" && errorMessage !== "success" && (
+                <Typography
+                  component="p"
+                  variant="body2"
+                  color="textSecondary"
+                  style={{ color: "red" }}
+                >
+                  Student enrollment failed
+                </Typography>
+              )} */}
             </Grid>
           </form>
         </CardContent>
