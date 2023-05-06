@@ -55,7 +55,7 @@ contract University{
     //         currentStudents[key] = true;
     //     }
     // }
-    function addStudent(string memory _name, uint _age, string memory _roll) public{
+    function addStudent(string memory _name, uint _age, string memory _roll) public {
         StudentData memory _student = StudentData(_name, _age, _roll);
         bytes32 _encryptedAdmin = sha256(abi.encodePacked(universityAdmin));
         bytes memory _sname = bytes(_student.name);
@@ -66,6 +66,17 @@ contract University{
         string memory _key = string(abi.encodePacked(_encryptedAdmin, _ihash2));
         currentStudents[_key] = true;
     }
+    // function addStudent(string memory _name, uint _age, string memory _roll) public {
+    //     StudentData memory _student = StudentData(_name, _age, _roll);
+    //     bytes32 _encryptedAdmin = sha256(abi.encodePacked(universityAdmin));
+    //     bytes memory _sname = bytes(_student.name);
+    //     uint  _sage = _student.age;
+    //     bytes memory _sroll = bytes(_student.roll);
+    //     bytes memory _ihash1 = abi.encodePacked(_sname, _sage);
+    //     bytes memory _ihash2 = abi.encodePacked(_ihash1,_sroll);
+    //     string memory _key = string(abi.encodePacked(_encryptedAdmin, _ihash2));
+    //     currentStudents[_key] = true;
+    // }
 
     function verifyStudent(string memory _name, uint _age, string memory _roll) public view returns (bool){
         StudentData memory _student = StudentData(_name, _age, _roll);

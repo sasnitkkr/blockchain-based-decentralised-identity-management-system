@@ -11,94 +11,51 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-
-import { hashString } from "./../utils/hashUtils";
+import {
+  addEmployee,
+  removeEmployee,
+  verifyEmployee,
+} from "../data_providers/defense_data_provider";
 
 const DefenseOps = (props) => {
-  const [employeeDetails, setEmployeeDetails] = useState({
-    id: "",
-    rank: "",
-  });
-
-  const handleChange = (e) => {
-    setEmployeeDetails({ ...employeeDetails, [e.target.name]: e.target.value });
-  };
-
-  const handleAdd = (e) => {
-    e.preventDefault();
-    const employeeId = employeeDetails.id.trim();
-    const employeeRank = employeeDetails.rank.trim();
-    if (!employeeId) {
-      return;
-    }
-    let employeeDb = localStorage.getItem("employees");
-    let newemployeeDb = {};
-    if (employeeDb) {
-      employeeDb = JSON.parse(employeeDb);
-      newemployeeDb = employeeDb;
-    }
-    newemployeeDb[hashString(employeeId)] = {
-      id: hashString(employeeId),
-      rank: employeeRank,
-    };
-    newemployeeDb = JSON.stringify(newemployeeDb);
-    localStorage.setItem("employees", newemployeeDb);
-  };
-
-  const handleCheck = (e) => {
-    e.preventDefault();
-    const employeeIdToCheck = employeeDetails.id.trim();
-    let employeeDb = localStorage.getItem("employees");
-    if (!employeeDb) {
-      setEmployeeDetails({ ...employeeDetails, rank: "" });
-      return;
-    }
-    employeeDb = JSON.parse(employeeDb);
-    if (employeeDb[hashString(employeeIdToCheck)]) {
-      setEmployeeDetails({
-        ...employeeDetails,
-        rank: employeeDb[hashString(employeeIdToCheck)].rank,
-      });
-    } else {
-      setEmployeeDetails({ ...employeeDetails, rank: "" });
+  const [id, setId] = useState('');
+  const [rank, setRank] = useState('');
+  const [message, setMessage] = useState();
+  const addEmployeeJS = async () => {
+    // console.log(name, age, roll);
+    try {
+      // setMessage("");
+      await addEmployee(id, rank);
+      setId('');
+      setRank('');
+      setMessage("Enrollment Successful");
+    } catch (err) {
+      console.log(err.message);
+      setMessage(err.message);
     }
   };
-
-  const handleUpdate = (e) => {
-    e.preventDefault();
-    const employeeId = employeeDetails.id.trim();
-    const employeeRank = employeeDetails.rank.trim();
-    if (!employeeId) {
-      return;
+  const removeEmployeeJS = async () => {
+    // console.log(name, age, roll);
+    try {
+      // setMessage("");
+      await removeEmployee(id, rank);
+      setId('');
+      setRank('');
+      setMessage("Employee removed successfully");
+    } catch (err) {
+      console.log(err.message);
+      setMessage(err.message);
     }
-    let employeeDb = localStorage.getItem("employees");
-    let newemployeeDb = {};
-    if (employeeDb) {
-      employeeDb = JSON.parse(employeeDb);
-      newemployeeDb = employeeDb;
-    }
-    newemployeeDb[hashString(employeeId)] = {
-      id: hashString(employeeId),
-      rank: employeeRank,
-    };
-    newemployeeDb = JSON.stringify(employeeDb);
-    localStorage.setItem("employees", newemployeeDb);
   };
-
-  const handleRemove = (e) => {
-    e.preventDefault();
-    const employeeId = employeeDetails.id.trim();
-    if (employeeId.length === 0) {
-      return;
-    }
-    let employeeDb = localStorage.getItem("employees");
-    if (!employeeDb) {
-      return;
-    }
-    employeeDb = JSON.parse(employeeDb);
-    delete employeeDb[hashString(employeeId)];
-    employeeDb = JSON.stringify(employeeDb);
-    localStorage.setItem("employees", employeeDb);
+  const verifyEmployeeJS = async () => {
+    const emp = await verifyEmployee(id, rank);
+    // console.log("-----------------------");
+    // console.log(typeof(status));
+    // console.log("---------------1--------");
+    if (emp.empId !== "") setMessage("Employee exists");
+    else setMessage("Employee doesn't exist");
+    setId('');
+    setRank('');
   };
 
   return (
@@ -117,11 +74,12 @@ const DefenseOps = (props) => {
           <form>
             <Grid container spacing={1}>
               <Grid xs={12} sm={6} item>
+                {/* <InputLabel id="empRank">EmpId</InputLabel> */}
                 <TextField
                   name="id"
-                  onChange={handleChange}
+                  onChange={(e) => setId(e.target.value)}
                   type="text"
-                  value={employeeDetails.id}
+                  value={id}
                   placeholder="Enter employee id"
                   label="Employee Id"
                   variant="outlined"
@@ -130,23 +88,26 @@ const DefenseOps = (props) => {
                 />
               </Grid>
               <Grid xs={12} sm={6} item>
-                <InputLabel id="empRank">Rank</InputLabel>
-                <Select
-                  labelId="empRank"
+                {/* <InputLabel id="empRank">Rank</InputLabel> */}
+                <TextField
+                  required
                   name="rank"
-                  onChange={handleChange}
-                  value={employeeDetails.rank}
+                  onChange={(e) => {
+                    setRank(e.target.value);
+                  }}
+                  select
+                  value={rank}
                   label="Rank"
                   fullWidth="true"
                 >
-                  <MenuItem value="LIEUTINANT">LIEUTINANT</MenuItem>
-                  <MenuItem value="COLONEL">COLONEL</MenuItem>
-                  <MenuItem value="MAJOR GENERAL">MAJOR GENERAL</MenuItem>
-                </Select>
+                  <MenuItem value="0">LIEUTINANT</MenuItem>
+                  <MenuItem value="1">COLONEL</MenuItem>
+                  <MenuItem value="2">MAJOR GENERAL</MenuItem>
+                </TextField>
               </Grid>
               <Grid xs={12} item>
                 <Button
-                  onClick={handleAdd}
+                  onClick={addEmployeeJS}
                   variant="contained"
                   color="primary"
                   fullWidth="true"
@@ -156,7 +117,7 @@ const DefenseOps = (props) => {
               </Grid>
               <Grid xs={12} item>
                 <Button
-                  onClick={handleCheck}
+                  onClick={verifyEmployeeJS}
                   variant="contained"
                   color="primary"
                   fullWidth="true"
@@ -166,17 +127,7 @@ const DefenseOps = (props) => {
               </Grid>
               <Grid xs={12} item>
                 <Button
-                  onClick={handleUpdate}
-                  variant="contained"
-                  color="primary"
-                  fullWidth="true"
-                >
-                  Update Employee
-                </Button>
-              </Grid>
-              <Grid xs={12} item>
-                <Button
-                  onClick={handleRemove}
+                  onClick={removeEmployeeJS}
                   variant="contained"
                   color="primary"
                   fullWidth="true"
@@ -186,6 +137,16 @@ const DefenseOps = (props) => {
               </Grid>
             </Grid>
           </form>
+          {message && (
+            <Typography
+              component="p"
+              variant="body2"
+              color="textSecondary"
+              style={{ color: "blue" }}
+            >
+              {message}
+            </Typography>
+          )}
         </CardContent>
       </Card>
     </div>

@@ -1,6 +1,6 @@
 import Web3 from "web3";
 
-const UNIVERSITY_ABI = [
+const DEFENCE_ABI = [
   {
     inputs: [],
     payable: false,
@@ -16,12 +16,17 @@ const UNIVERSITY_ABI = [
         type: "string",
       },
     ],
-    name: "currentStudents",
+    name: "currentEmployees",
     outputs: [
       {
-        internalType: "bool",
-        name: "",
-        type: "bool",
+        internalType: "string",
+        name: "empId",
+        type: "string",
+      },
+      {
+        internalType: "enum Defence.Rank",
+        name: "empRank",
+        type: "uint8",
       },
     ],
     payable: false,
@@ -33,21 +38,16 @@ const UNIVERSITY_ABI = [
     inputs: [
       {
         internalType: "string",
-        name: "_name",
+        name: "_empId",
         type: "string",
       },
       {
-        internalType: "uint256",
-        name: "_age",
-        type: "uint256",
-      },
-      {
-        internalType: "string",
-        name: "_roll",
-        type: "string",
+        internalType: "enum Defence.Rank",
+        name: "_empRank",
+        type: "uint8",
       },
     ],
-    name: "addStudent",
+    name: "addEmployee",
     outputs: [],
     payable: false,
     stateMutability: "nonpayable",
@@ -58,26 +58,33 @@ const UNIVERSITY_ABI = [
     inputs: [
       {
         internalType: "string",
-        name: "_name",
+        name: "_empId",
         type: "string",
       },
       {
-        internalType: "uint256",
-        name: "_age",
-        type: "uint256",
-      },
-      {
-        internalType: "string",
-        name: "_roll",
-        type: "string",
+        internalType: "enum Defence.Rank",
+        name: "_empRank",
+        type: "uint8",
       },
     ],
-    name: "verifyStudent",
+    name: "verifyEmployee",
     outputs: [
       {
-        internalType: "bool",
+        components: [
+          {
+            internalType: "string",
+            name: "empId",
+            type: "string",
+          },
+          {
+            internalType: "enum Defence.Rank",
+            name: "empRank",
+            type: "uint8",
+          },
+        ],
+        internalType: "struct Defence.Employee",
         name: "",
-        type: "bool",
+        type: "tuple",
       },
     ],
     payable: false,
@@ -89,66 +96,62 @@ const UNIVERSITY_ABI = [
     inputs: [
       {
         internalType: "string",
-        name: "_name",
+        name: "_empId",
         type: "string",
       },
       {
-        internalType: "uint256",
-        name: "_age",
-        type: "uint256",
-      },
-      {
-        internalType: "string",
-        name: "_roll",
-        type: "string",
+        internalType: "enum Defence.Rank",
+        name: "_empRank",
+        type: "uint8",
       },
     ],
-    name: "removeStudent",
+    name: "removeEmployee",
     outputs: [],
     payable: false,
     stateMutability: "nonpayable",
     type: "function",
   },
 ];
-const UNIVERSITY_ADDRESS = "0xE40929a05C8211915D21140fC380934E0Ed236ec";
+const DEFENCE_ADDRESS = "0x853849f5caFB44D058fEa72ff8091301a59D9Ff5";
 
 // gas value: 7920027
+// DEFENCE_ADDRESS
 
-async function removeStudent(name, age, roll) {
+async function removeEmployee(empId, empRank) {
   const web3 = new Web3(Web3.givenProvider || "http://localhost:7545");
-  const studentList = new web3.eth.Contract(UNIVERSITY_ABI, UNIVERSITY_ADDRESS);
-  const gas = await studentList.methods
-    .removeStudent(name, age, roll)
+  const employeeList = new web3.eth.Contract(DEFENCE_ABI, DEFENCE_ADDRESS);
+  const gas = await employeeList.methods
+    .removeEmployee(empId, empRank)
     .estimateGas();
   const accounts = await window.ethereum.enable();
   const account = accounts[0];
-  await studentList.methods
-    .removeStudent(name, age, roll)
+  await employeeList.methods
+    .removeEmployee(empId, empRank)
     .send({ from: account, gas });
 }
 
-async function verifyStudent(name, age, roll) {
+async function verifyEmployee(empId, empRank) {
   const web3 = new Web3(Web3.givenProvider || "http://localhost:7545");
-  const studentList = new web3.eth.Contract(UNIVERSITY_ABI, UNIVERSITY_ADDRESS);
-  const verificationStatus = await studentList.methods
-    .verifyStudent(name, age, roll)
+  const employeeList = new web3.eth.Contract(DEFENCE_ABI, DEFENCE_ADDRESS);
+  const verificationStatus = await employeeList.methods
+    .verifyEmployee(empId, empRank)
     .call();
   console.log(verificationStatus);
   return verificationStatus;
 }
 
-async function addStudent(name, age, roll) {
+async function addEmployee(empId, empRank) {
   const web3 = new Web3(Web3.givenProvider || "http://localhost:7545");
-  const studentList = new web3.eth.Contract(UNIVERSITY_ABI, UNIVERSITY_ADDRESS);
-  const gas = await studentList.methods
-    .addStudent(name, age, roll)
+  const employeeList = new web3.eth.Contract(DEFENCE_ABI, DEFENCE_ADDRESS);
+  const gas = await employeeList.methods
+    .addEmployee(empId, empRank)
     .estimateGas();
   const accounts = await window.ethereum.enable();
   const account = accounts[0];
   console.log(account);
-  await studentList.methods
-    .addStudent(name, age, roll)
+  await employeeList.methods
+    .addEmployee(empId, empRank)
     .send({ from: account, gas });
 }
 
-export { removeStudent, verifyStudent, addStudent };
+export { removeEmployee, verifyEmployee, addEmployee };

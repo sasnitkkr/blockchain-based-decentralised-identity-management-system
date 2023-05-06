@@ -22,7 +22,7 @@ const UniversityOps = (props) => {
   const [name, setName] = useState();
   const [age, setAge] = useState();
   const [roll, setRoll] = useState();
-  const [verificationStatus, setVerificationStatus] = useState(2);
+  // const [verificationStatus, setVerificationStatus] = useState(2);
   const [message, setMessage] = useState();
   const addStudentJS = async () => {
     // console.log(name, age, roll);
