@@ -11,9 +11,9 @@ const DEFENCE_ABI = [
     constant: true,
     inputs: [
       {
-        internalType: "string",
+        internalType: "bytes",
         name: "",
-        type: "string",
+        type: "bytes",
       },
     ],
     name: "currentEmployees",
@@ -51,6 +51,32 @@ const DEFENCE_ABI = [
     outputs: [],
     payable: false,
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        internalType: "string",
+        name: "_empId",
+        type: "string",
+      },
+      {
+        internalType: "enum Defence.Rank",
+        name: "_empRank",
+        type: "uint8",
+      },
+    ],
+    name: "getEmployeeKey",
+    outputs: [
+      {
+        internalType: "bytes",
+        name: "",
+        type: "bytes",
+      },
+    ],
+    payable: false,
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -112,7 +138,7 @@ const DEFENCE_ABI = [
     type: "function",
   },
 ];
-const DEFENCE_ADDRESS = "0x853849f5caFB44D058fEa72ff8091301a59D9Ff5";
+const DEFENCE_ADDRESS = "0x8387491528177ACA9565aD8A8641185D442dAefd";
 
 // gas value: 7920027
 // DEFENCE_ADDRESS
@@ -139,6 +165,13 @@ async function verifyEmployee(empId, empRank) {
   console.log(verificationStatus);
   return verificationStatus;
 }
+async function verifyEmployeeFromKey(key) {
+  const web3 = new Web3(Web3.givenProvider || "http://localhost:7545");
+  const employeeList = new web3.eth.Contract(DEFENCE_ABI, DEFENCE_ADDRESS);
+  const empData = await employeeList.methods.currentEmployees(key).call();
+  // console.log(verificationStatus);
+  return empData;
+}
 
 async function addEmployee(empId, empRank) {
   const web3 = new Web3(Web3.givenProvider || "http://localhost:7545");
@@ -152,6 +185,8 @@ async function addEmployee(empId, empRank) {
   await employeeList.methods
     .addEmployee(empId, empRank)
     .send({ from: account, gas });
+  const key = await employeeList.methods.getEmployeeKey(empId, empRank).call();
+  return key;
 }
 
-export { removeEmployee, verifyEmployee, addEmployee };
+export { verifyEmployeeFromKey, removeEmployee, verifyEmployee, addEmployee };

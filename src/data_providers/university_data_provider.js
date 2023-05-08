@@ -11,9 +11,9 @@ const UNIVERSITY_ABI = [
     constant: true,
     inputs: [
       {
-        internalType: "string",
+        internalType: "bytes",
         name: "",
-        type: "string",
+        type: "bytes",
       },
     ],
     name: "currentStudents",
@@ -22,6 +22,52 @@ const UNIVERSITY_ABI = [
         internalType: "bool",
         name: "",
         type: "bool",
+      },
+    ],
+    payable: false,
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        internalType: "string",
+        name: "_name",
+        type: "string",
+      },
+      {
+        internalType: "uint256",
+        name: "_age",
+        type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "_roll",
+        type: "string",
+      },
+    ],
+    name: "getStudentKey",
+    outputs: [
+      {
+        internalType: "bytes",
+        name: "",
+        type: "bytes",
+      },
+    ],
+    payable: false,
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: "demo",
+    outputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
       },
     ],
     payable: false,
@@ -110,7 +156,7 @@ const UNIVERSITY_ABI = [
     type: "function",
   },
 ];
-const UNIVERSITY_ADDRESS = "0xE40929a05C8211915D21140fC380934E0Ed236ec";
+const UNIVERSITY_ADDRESS = "0x4da56C6071EfEaD42E432917B9835fDBb2030Da0";
 
 // gas value: 7920027
 
@@ -149,6 +195,20 @@ async function addStudent(name, age, roll) {
   await studentList.methods
     .addStudent(name, age, roll)
     .send({ from: account, gas });
+  // const info = await studentList.methods.currentStudents("0x3c25a0d9ff8a879ae6a643f6ce26f770cb2f5e06bf4e80d9638b597af09f64a3").call();
+  // console.log(JSON.stringify(key, null, 4));
+  const key = await studentList.methods.getStudentKey(name, age, roll).call();
+  // console.log(key);
+  return key;
+}
+async function verifyStudentFromKey(key) {
+  const web3 = new Web3(Web3.givenProvider || "http://localhost:7545");
+  const studentList = new web3.eth.Contract(UNIVERSITY_ABI, UNIVERSITY_ADDRESS);
+  const verificationStatus = await studentList.methods
+    .currentStudents(key)
+    .call();
+  // console.log(verificationStatus);
+  return verificationStatus;
 }
 
-export { removeStudent, verifyStudent, addStudent };
+export { verifyStudentFromKey, removeStudent, verifyStudent, addStudent };

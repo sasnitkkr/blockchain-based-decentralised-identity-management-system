@@ -4,9 +4,7 @@ import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Navbar from "./Navbar";
-import { verifyStudentFromKey } from "../data_providers/university_data_provider";
-import { verifyEmployeeFromKey } from "../data_providers/defense_data_provider";
-import { Typography } from "@mui/material";
+
 const Booking = (props) => {
   const coords = { Chandigarh: 0, Kurukshetra: 50, Delhi: 200 };
 
@@ -20,8 +18,6 @@ const Booking = (props) => {
     fare: 0,
   });
 
-  const [bookingMessage, setBookingMessage] = React.useState(false);
-
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(data);
@@ -32,49 +28,55 @@ const Booking = (props) => {
     setData({ ...data, [e.target.name]: value });
   };
 
-  const bookingHandleClick = () => {
-    setBookingMessage(true);
-  };
-
-  const calculateFare = async () => {
-    setBookingMessage(false);
+  const calculateFare = () => {
     const start = coords[data.source],
       end = coords[data.destination];
     const distance = end > start ? end - start : start - end;
     let fare = distance,
       eligibleConcession = "";
     if (data.concession === "STUDENT") {
-      const verificationStatus = await verifyStudentFromKey(data.rootId);
-      console.log(verificationStatus);
-      // const currentUser = localStorage.getItem("currentUser");
-      // const rollNo = JSON.parse(localStorage.getItem(currentUser))["rollNo"];
-      // const students = JSON.parse(localStorage.getItem("students"));
-      if (verificationStatus) {
-        fare = (fare * 9) / 10;
-        eligibleConcession = "STUDENT";
-      } else {
-        eligibleConcession = "";
+      const currentUser = localStorage.getItem("currentUser");
+      const rollNo = JSON.parse(localStorage.getItem(currentUser))["rollNo"];
+      const students = JSON.parse(localStorage.getItem("students"));
+      if (students) {
+        const isRollNoEnrolled = students[rollNo];
+        if (isRollNoEnrolled) {
+          fare = (fare * 9) / 10;
+          eligibleConcession = "STUDENT";
+        } else {
+          eligibleConcession = "";
+        }
       }
     } else if (data.concession === "DEFENSE") {
-      const empData = await verifyEmployeeFromKey(data.rootId);
-      console.log(empData);
-      if (empData.empId !== "") {
-        eligibleConcession = "DEFENSE";
-        switch (empData.empRank) {
-          case "0":
-            fare = (fare * 85) / 100;
-            break;
-          case "1":
-            fare = (fare * 80) / 100;
-            break;
-          case "2":
-            fare = (fare * 75) / 100;
-            break;
-          default:
-            break;
+      const currentUser = localStorage.getItem("currentUser");
+      const defenseEmpId = JSON.parse(localStorage.getItem(currentUser))[
+        "defenseEmpId"
+      ];
+      const employees = JSON.parse(localStorage.getItem("employees"));
+      if (employees) {
+        const empEnrolled = employees[defenseEmpId];
+        if (
+          empEnrolled &&
+          empEnrolled["rank"] &&
+          empEnrolled["rank"].length > 0
+        ) {
+          eligibleConcession = "DEFENSE";
+          switch (empEnrolled["rank"]) {
+            case "LIEUTINANT":
+              fare = (fare * 85) / 100;
+              break;
+            case "COLONEL":
+              fare = (fare * 80) / 100;
+              break;
+            case "MAJOR GENERAL":
+              fare = (fare * 75) / 100;
+              break;
+            default:
+              break;
+          }
+        } else {
+          eligibleConcession = "";
         }
-      } else {
-        eligibleConcession = "";
       }
     }
     setData({
@@ -84,6 +86,7 @@ const Booking = (props) => {
       eligibleConcession: eligibleConcession,
     });
   };
+
   return (
     <div style={{ backgroundColor: "gray", height: "100vh", overflow: "auto" }}>
       <Navbar />
@@ -184,13 +187,8 @@ const Booking = (props) => {
           {data.eligibleConcession === "DEFENSE" && (
             <p style={{ color: "darkblue" }}>Eligible for Defense Concession</p>
           )}
-          <Button variant="contained" onClick={bookingHandleClick}>
-            Book Ticket
-          </Button>
+          <Button variant="contained">Book Ticket</Button>
           <br />
-          {bookingMessage && (
-            <p style={{ color: "darkblue" }}>Ticket Booked Successfully</p>
-          )}
         </form>
       </div>
     </div>

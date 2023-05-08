@@ -3,6 +3,8 @@
 * Remove/Delist students
 * Student verification/Check
 */
+// university = await University.deployed()
+//university.getStudentKey("s1",21,"s121")
 
 pragma solidity 0.5.16;
 pragma experimental ABIEncoderV2;
@@ -19,7 +21,8 @@ contract University{
     }
     
 
-    mapping(string=>bool) public currentStudents;
+    // mapping(string=>bool) public currentStudents;
+    mapping(bytes=>bool) public currentStudents;
 
     constructor() public{
         // universityName=uniName;
@@ -55,6 +58,23 @@ contract University{
     //         currentStudents[key] = true;
     //     }
     // }
+    function getStudentKey(string memory _name, uint _age, string memory _roll) public view returns (bytes memory){
+        StudentData memory _student = StudentData(_name, _age, _roll);
+        bytes32 _encryptedAdmin = sha256(abi.encodePacked(universityAdmin));
+        bytes memory _sname = bytes(_student.name);
+        uint  _sage = _student.age;
+        bytes memory _sroll = bytes(_student.roll);
+        bytes memory _ihash1 = abi.encodePacked(_sname, _sage);
+        bytes memory _ihash2 = abi.encodePacked(_ihash1,_sroll);
+        bytes memory _temp=abi.encodePacked(_encryptedAdmin, _ihash2);
+        // string memory _key = string(abi.encodePacked(_encryptedAdmin, _ihash2));
+        return _temp;
+        // return "Hello";
+    }
+    function demo() public view returns(string memory){
+        return "Hello World";
+    }
+    
     function addStudent(string memory _name, uint _age, string memory _roll) public {
         StudentData memory _student = StudentData(_name, _age, _roll);
         bytes32 _encryptedAdmin = sha256(abi.encodePacked(universityAdmin));
@@ -63,20 +83,10 @@ contract University{
         bytes memory _sroll = bytes(_student.roll);
         bytes memory _ihash1 = abi.encodePacked(_sname, _sage);
         bytes memory _ihash2 = abi.encodePacked(_ihash1,_sroll);
-        string memory _key = string(abi.encodePacked(_encryptedAdmin, _ihash2));
+        // string memory _key = string(abi.encodePacked(_encryptedAdmin, _ihash2));
+        bytes memory _key=abi.encodePacked(_encryptedAdmin, _ihash2);
         currentStudents[_key] = true;
     }
-    // function addStudent(string memory _name, uint _age, string memory _roll) public {
-    //     StudentData memory _student = StudentData(_name, _age, _roll);
-    //     bytes32 _encryptedAdmin = sha256(abi.encodePacked(universityAdmin));
-    //     bytes memory _sname = bytes(_student.name);
-    //     uint  _sage = _student.age;
-    //     bytes memory _sroll = bytes(_student.roll);
-    //     bytes memory _ihash1 = abi.encodePacked(_sname, _sage);
-    //     bytes memory _ihash2 = abi.encodePacked(_ihash1,_sroll);
-    //     string memory _key = string(abi.encodePacked(_encryptedAdmin, _ihash2));
-    //     currentStudents[_key] = true;
-    // }
 
     function verifyStudent(string memory _name, uint _age, string memory _roll) public view returns (bool){
         StudentData memory _student = StudentData(_name, _age, _roll);
@@ -86,19 +96,21 @@ contract University{
         bytes memory _sroll = bytes(_student.roll);
         bytes memory _ihash1 = abi.encodePacked(_sname, _sage);
         bytes memory _ihash2 = abi.encodePacked(_ihash1,_sroll);
-        string memory _key = string(abi.encodePacked(_encryptedAdmin, _ihash2));
+        // string memory _key = string(abi.encodePacked(_encryptedAdmin, _ihash2));
+        bytes memory _key=abi.encodePacked(_encryptedAdmin, _ihash2);
         return currentStudents[_key];
     }
 
     function removeStudent(string memory _name, uint _age, string memory _roll) public {
         StudentData memory _student = StudentData(_name, _age, _roll);
-        bytes32 encryptedAdmin = sha256(abi.encodePacked(universityAdmin));
+        bytes32 _encryptedAdmin = sha256(abi.encodePacked(universityAdmin));
         bytes memory sname = bytes(_student.name);
         uint sage = _student.age;
-        bytes memory sroll = bytes(_student.roll);
-        bytes memory ihash1 = abi.encodePacked(sname,sage);
-        bytes memory ihash2 = abi.encodePacked(ihash1,sroll);
-        string memory key = string(abi.encodePacked(encryptedAdmin, ihash2));
-        delete(currentStudents[key]);
+        bytes memory _sroll = bytes(_student.roll);
+        bytes memory _ihash1 = abi.encodePacked(sname,sage);
+        bytes memory _ihash2 = abi.encodePacked(_ihash1,_sroll);
+        // string memory key = string(abi.encodePacked(encryptedAdmin, ihash2));
+        bytes memory _key=abi.encodePacked(_encryptedAdmin, _ihash2);
+        delete(currentStudents[_key]);
     } 
 }

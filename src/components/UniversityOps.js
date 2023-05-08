@@ -28,11 +28,12 @@ const UniversityOps = (props) => {
     // console.log(name, age, roll);
     try {
       // setMessage("");
-      await addStudent(name, age, roll);
+      const key = await addStudent(name, age, roll);
+      // console.log(key);
       setName("");
       setAge("");
       setRoll("");
-      setMessage("Enrollment Successful");
+      setMessage(`Enrollment Successful with key = ${key}`);
     } catch (err) {
       console.log(err.message);
       setMessage(err.message);
@@ -53,16 +54,21 @@ const UniversityOps = (props) => {
     }
   };
   const verifyStudentJS = async () => {
-    const status = await verifyStudent(name, age, roll);
-    // setErrorMessage("e1");
-    console.log("-----------------------");
-    console.log(status);
-    console.log("-----------------------");
-    if (status === true) setMessage("Student enrolled");
-    else setMessage("Student not enrolled");
-    setName("");
-    setAge("");
-    setRoll("");
+    try {
+      const status = await verifyStudent(name, age, roll);
+      // setErrorMessage("e1");
+      console.log("-----------------------");
+      console.log(status);
+      console.log("-----------------------");
+      if (status === true) setMessage("Student enrolled");
+      else setMessage("Student not enrolled");
+      setName("");
+      setAge("");
+      setRoll("");
+    } catch (err) {
+      console.log(err.message);
+      setMessage(err.message);
+    }
   };
 
   return (
@@ -178,7 +184,11 @@ const UniversityOps = (props) => {
                   component="p"
                   variant="body2"
                   color="textSecondary"
-                  style={{ color: "blue" }}
+                  style={{
+                    color: "blue",
+                    wordBreak: "break-all"
+                  }}
+                  // width="50%"
                 >
                   {message}
                 </Typography>

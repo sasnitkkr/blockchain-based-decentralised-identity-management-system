@@ -18,17 +18,17 @@ import {
 } from "../data_providers/defense_data_provider";
 
 const DefenseOps = (props) => {
-  const [id, setId] = useState('');
-  const [rank, setRank] = useState('');
+  const [id, setId] = useState("");
+  const [rank, setRank] = useState("");
   const [message, setMessage] = useState();
   const addEmployeeJS = async () => {
     // console.log(name, age, roll);
     try {
       // setMessage("");
-      await addEmployee(id, rank);
-      setId('');
-      setRank('');
-      setMessage("Enrollment Successful");
+      const key = await addEmployee(id, rank);
+      setId("");
+      setRank("");
+      setMessage(`Enrollment Successful with key = ${key}`);
     } catch (err) {
       console.log(err.message);
       setMessage(err.message);
@@ -39,8 +39,8 @@ const DefenseOps = (props) => {
     try {
       // setMessage("");
       await removeEmployee(id, rank);
-      setId('');
-      setRank('');
+      setId("");
+      setRank("");
       setMessage("Employee removed successfully");
     } catch (err) {
       console.log(err.message);
@@ -54,8 +54,8 @@ const DefenseOps = (props) => {
     // console.log("---------------1--------");
     if (emp.empId !== "") setMessage("Employee exists");
     else setMessage("Employee doesn't exist");
-    setId('');
-    setRank('');
+    setId("");
+    setRank("");
   };
 
   return (
@@ -142,7 +142,7 @@ const DefenseOps = (props) => {
               component="p"
               variant="body2"
               color="textSecondary"
-              style={{ color: "blue" }}
+              style={{ color: "blue", wordBreak: "break-all" }}
             >
               {message}
             </Typography>
