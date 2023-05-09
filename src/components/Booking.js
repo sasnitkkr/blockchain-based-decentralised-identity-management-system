@@ -6,7 +6,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Navbar from "./Navbar";
 import { verifyStudentFromKey } from "../data_providers/university_data_provider";
 import { verifyEmployeeFromKey } from "../data_providers/defense_data_provider";
-import { Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 const Booking = (props) => {
   const coords = { Chandigarh: 0, Kurukshetra: 50, Delhi: 200 };
 
@@ -21,6 +21,7 @@ const Booking = (props) => {
   });
 
   const [bookingMessage, setBookingMessage] = React.useState(false);
+  const [status, setStatus] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -33,10 +34,17 @@ const Booking = (props) => {
   };
 
   const bookingHandleClick = () => {
+    if (!status) {
+      return;
+    }
     setBookingMessage(true);
   };
 
   const calculateFare = async () => {
+    if (data.source === "" || data.destination === "" || data.rootId === "") {
+      return;
+    }
+    setStatus(false);
     setBookingMessage(false);
     const start = coords[data.source],
       end = coords[data.destination];
@@ -77,6 +85,7 @@ const Booking = (props) => {
         eligibleConcession = "";
       }
     }
+    setStatus(true);
     setData({
       ...data,
       fare: fare,
@@ -85,15 +94,21 @@ const Booking = (props) => {
     });
   };
   return (
-    <div style={{ backgroundColor: "gray", height: "100vh", overflow: "auto" }}>
+    <div
+      style={{
+        backgroundColor: "gray",
+        height: "100vh",
+        overflow: "auto",
+      }}
+    >
       <Navbar />
       <div
         style={{
-          width: "30%",
-          backgroundColor: "#eee",
-          boxShadow: "0px 0px 50px #111",
-          padding: "30px",
-          borderRadius: "20px",
+          width: "40%",
+          backgroundColor: "#ffffff",
+          // boxShadow: "0px 0px 30px #111",
+          padding: "25px",
+          borderRadius: "10px",
           marginLeft: "50vw",
           marginTop: "50vh",
           transform: "translate(-50%, -50%)",
@@ -111,11 +126,12 @@ const Booking = (props) => {
           />
           <br />
           <br />
-          <label htmlFor="source">Enter Your Source</label>
+          {/* <label htmlFor="source">Enter Your Source</label>
           <br />
           <Select
             style={{ marginTop: "10px" }}
             id="source"
+            label="source"
             value={data.source}
             onChange={handleChange}
             name="source"
@@ -137,7 +153,41 @@ const Booking = (props) => {
             <MenuItem value="Kurukshetra">Kurukshetra</MenuItem>
             <MenuItem value="Chandigarh">Chandigarh</MenuItem>
             <MenuItem value="Delhi">Delhi</MenuItem>
-          </Select>
+          </Select> */}
+          <Grid container spacing={1}>
+            <Grid xs={12} sm={6} item>
+              {/* <InputLabel id="empRank">EmpId</InputLabel> */}
+              <TextField
+                required
+                name="source"
+                value={data.source}
+                onChange={handleChange}
+                select
+                label="Source"
+                fullWidth="true"
+              >
+                <MenuItem value="Kurukshetra">Kurukshetra</MenuItem>
+                <MenuItem value="Chandigarh">Chandigarh</MenuItem>
+                <MenuItem value="Delhi">Delhi</MenuItem>
+              </TextField>
+            </Grid>
+            <Grid xs={12} sm={6} item>
+              {/* <InputLabel id="empRank">Rank</InputLabel> */}
+              <TextField
+                required
+                name="destination"
+                value={data.destination}
+                onChange={handleChange}
+                select
+                label="Destination"
+                fullWidth="true"
+              >
+                <MenuItem value="Kurukshetra">Kurukshetra</MenuItem>
+                <MenuItem value="Chandigarh">Chandigarh</MenuItem>
+                <MenuItem value="Delhi">Delhi</MenuItem>
+              </TextField>
+            </Grid>
+          </Grid>
           <br />
           <br />
           <label htmlFor="concession">

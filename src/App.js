@@ -7,6 +7,7 @@ import Booking from "./components/Booking";
 import DefenseOps from "./components/DefenseOps";
 import UniversityOps from "./components/UniversityOps";
 import Navbar from "./components/Navbar";
+import { Home } from "./components/Home";
 // import CompleteMerkleTree from './components/MerkleTree';
 // const web3 = new Web3(Web3.givenProvider || "http://localhost:7545");
 
@@ -50,7 +51,7 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navbar />} />
+        <Route path="/" element={<Home />} />
         <Route path="/kyc" element={<KycForm />} />
         <Route path="/defense" element={<DefenseOps />} />
         <Route path="/university" element={<UniversityOps />} />
