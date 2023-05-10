@@ -110,7 +110,7 @@ const Booking = (props) => {
           padding: "25px",
           borderRadius: "10px",
           marginLeft: "50vw",
-          marginTop: "50vh",
+          marginTop: "22em",
           transform: "translate(-50%, -50%)",
         }}
       >

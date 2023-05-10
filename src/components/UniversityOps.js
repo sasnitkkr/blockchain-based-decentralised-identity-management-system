@@ -143,7 +143,7 @@ const UniversityOps = (props) => {
                   id="fullWidth"
                   fullWidth
                 >
-                  Enroll Roll Numbers
+                  Enroll Roll Number
                 </Button>
               </Grid>
               <Grid xs={12} item>
@@ -155,7 +155,7 @@ const UniversityOps = (props) => {
                   id="fullWidth"
                   fullWidth
                 >
-                  Delist Roll Numbers
+                  Delist Roll Number
                 </Button>
               </Grid>
               <Grid xs={12} item>
