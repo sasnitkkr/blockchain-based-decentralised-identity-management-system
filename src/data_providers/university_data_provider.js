@@ -155,8 +155,34 @@ const UNIVERSITY_ABI = [
     stateMutability: "nonpayable",
     type: "function",
   },
+  {
+    constant: true,
+    inputs: [
+      {
+        internalType: "bytes",
+        name: "_key",
+        type: "bytes",
+      },
+      {
+        internalType: "string",
+        name: "_id",
+        type: "string",
+      },
+    ],
+    name: "verifyStudentFromKeyAndId",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    payable: false,
+    stateMutability: "view",
+    type: "function",
+  },
 ];
-const UNIVERSITY_ADDRESS = "0x2D4CFa0869cF572C9868Ff31289b73ed24990597";
+const UNIVERSITY_ADDRESS = "0x8ae570F349cFbfbf4660dD9975D1D126461A6A66";
 
 // gas value: 7920027
 
@@ -198,13 +224,15 @@ async function addStudent(name, age, roll) {
   const key = await studentList.methods.getStudentKey(name, age, roll).call();
   return key;
 }
-async function verifyStudentFromKey(key) {
+
+//Change
+async function verifyStudentFromKeyAndId(key, id) {
   const web3 = new Web3(Web3.givenProvider || "http://localhost:7545");
   const studentList = new web3.eth.Contract(UNIVERSITY_ABI, UNIVERSITY_ADDRESS);
   const verificationStatus = await studentList.methods
-    .currentStudents(key)
+    .verifyStudentFromKeyAndId(key, id)
     .call();
   return verificationStatus;
 }
 
-export { verifyStudentFromKey, removeStudent, verifyStudent, addStudent };
+export { verifyStudentFromKeyAndId, removeStudent, verifyStudent, addStudent };

@@ -49,6 +49,12 @@ contract Defence{
         return _key;
     }
 
+    function dummy(Rank _empRank) public view returns(bytes memory){
+        bytes memory byteEmpRank = bytes(_empRank);
+        // bytes memory _key = abi.encodePacked(_empRank, _empRank);
+        return byteEmpRank;
+    }
+
     function verifyEmployee(string memory _empId, Rank _empRank) public view returns (Employee memory){
         Employee memory _employee = Employee(_empId, _empRank);
         bytes32 encryptedAdmin = sha256(abi.encodePacked(admin));

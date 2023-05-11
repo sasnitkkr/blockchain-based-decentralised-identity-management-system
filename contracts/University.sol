@@ -36,8 +36,9 @@ contract University{
         bytes memory _ihash1 = abi.encodePacked(_sname, _sage);
         bytes memory _ihash2 = abi.encodePacked(_ihash1,_sroll);
         bytes memory _temp=abi.encodePacked(_encryptedAdmin, _ihash2);
-        return _temp;
+        return _ihash1;//change
     }
+
     function demo() public view returns(string memory){
         return "Hello World";
     }
@@ -77,4 +78,13 @@ contract University{
         bytes memory _key=abi.encodePacked(_encryptedAdmin, _ihash2);
         delete(currentStudents[_key]);
     } 
+
+    function verifyStudentFromKeyAndId(bytes memory _key, string memory _id) public view returns (bool){
+        bytes32 _encryptedAdmin = sha256(abi.encodePacked(universityAdmin));
+        bytes memory _bytesID = bytes(_id);
+        // bytes memory _ihash1 = abi.encodePacked(_sname, _sage);
+        bytes memory _ihash2 = abi.encodePacked(_key,_bytesID);
+        bytes memory _checkKey=abi.encodePacked(_encryptedAdmin, _ihash2);
+        return currentStudents[_checkKey];
+    }
 }

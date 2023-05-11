@@ -138,7 +138,7 @@ const DEFENCE_ABI = [
     type: "function",
   },
 ];
-const DEFENCE_ADDRESS = "0x57D13EE8DB35973079E474f44D2D5b9fC72219f7";
+const DEFENCE_ADDRESS = "0xae7A3601A2844EBc2E738c8e777FaD8cEC9CC12D";
 
 // gas value: 7920027
 // DEFENCE_ADDRESS
@@ -165,7 +165,8 @@ async function verifyEmployee(empId, empRank) {
   console.log(verificationStatus);
   return verificationStatus;
 }
-async function verifyEmployeeFromKey(key) {
+// Change
+async function verifyEmployeeFromKeyAndId(key) {
   const web3 = new Web3(Web3.givenProvider || "http://localhost:7545");
   const employeeList = new web3.eth.Contract(DEFENCE_ABI, DEFENCE_ADDRESS);
   const empData = await employeeList.methods.currentEmployees(key).call();
@@ -189,4 +190,4 @@ async function addEmployee(empId, empRank) {
   return key;
 }
 
-export { verifyEmployeeFromKey, removeEmployee, verifyEmployee, addEmployee };
+export { verifyEmployeeFromKeyAndId, removeEmployee, verifyEmployee, addEmployee };

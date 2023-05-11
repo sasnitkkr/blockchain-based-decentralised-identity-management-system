@@ -27,7 +27,7 @@ const UniversityOps = (props) => {
       setName("");
       setAge("");
       setRoll("");
-      setMessage(`Enrollment Successful with key = ${key}`);
+      setMessage(`Enrollment Successful with private key = ${key}. Keep this key safe with yourself.`);
     } catch (err) {
       console.log(err.message);
       setMessage(err.message);

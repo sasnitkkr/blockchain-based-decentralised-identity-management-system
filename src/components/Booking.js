@@ -4,14 +4,15 @@ import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Navbar from "./Navbar";
-import { verifyStudentFromKey } from "../data_providers/university_data_provider";
-import { verifyEmployeeFromKey } from "../data_providers/defense_data_provider";
+import { verifyStudentFromKeyAndId } from "../data_providers/university_data_provider";
+import { verifyEmployeeFromKeyAndId } from "../data_providers/defense_data_provider";
 import { Grid, Typography } from "@mui/material";
 const Booking = (props) => {
   const coords = { Chandigarh: 0, Kurukshetra: 50, Delhi: 200 };
 
   const [data, setData] = useState({
-    rootId: "",
+    key: "",
+    id: "",
     source: "",
     destination: "",
     concession: "",
@@ -41,7 +42,12 @@ const Booking = (props) => {
   };
 
   const calculateFare = async () => {
-    if (data.source === "" || data.destination === "" || data.rootId === "") {
+    if (
+      data.source === "" ||
+      data.destination === "" ||
+      data.key === "" ||
+      data.id === ""
+    ) {
       return;
     }
     setStatus(false);
@@ -52,16 +58,19 @@ const Booking = (props) => {
     let fare = distance,
       eligibleConcession = "";
     if (data.concession === "STUDENT") {
-      const verificationStatus = await verifyStudentFromKey(data.rootId);
+      const verificationStatus = await verifyStudentFromKeyAndId(
+        data.key,
+        data.id
+      );
       console.log(verificationStatus);
       if (verificationStatus) {
         fare = (fare * 9) / 10;
         eligibleConcession = "STUDENT";
       } else {
-        eligibleConcession = "";
+        eligibleConcession = "NOT ELIGIBLE";
       }
     } else if (data.concession === "DEFENSE") {
-      const empData = await verifyEmployeeFromKey(data.rootId);
+      const empData = await verifyEmployeeFromKeyAndId(data.key, data.id);
       console.log(empData);
       if (empData.empId !== "") {
         eligibleConcession = "DEFENSE";
@@ -79,7 +88,7 @@ const Booking = (props) => {
             break;
         }
       } else {
-        eligibleConcession = "";
+        eligibleConcession = "NOT ELIGIBLE";
       }
     }
     setStatus(true);
@@ -112,13 +121,23 @@ const Booking = (props) => {
       >
         <form onSubmit={handleSubmit}>
           <TextField
-            name="rootId"
+            name="key"
             onChange={handleChange}
             type="text"
             variant="standard"
-            value={data.rootId}
-            label="Root ID"
-            placeholder="Enter your Root ID"
+            value={data.key}
+            label="Key"
+            placeholder="Enter your key"
+            style={{ marginRight: "66px" }}
+          />
+          <TextField
+            name="id"
+            onChange={handleChange}
+            type="text"
+            variant="standard"
+            value={data.id}
+            label="ID"
+            placeholder="Enter your ID"
           />
           <br />
           <br />
@@ -195,17 +214,20 @@ const Booking = (props) => {
           <p> Your Total Distance is: {data.distance}</p>
           <p> Your Total Fare is: {data.fare}</p>
           {data.eligibleConcession === "STUDENT" && (
-            <p style={{ color: "darkblue" }}>Eligible for Student Concession</p>
+            <p style={{ color: "green" }}>Eligible for Student Concession</p>
           )}
           {data.eligibleConcession === "DEFENSE" && (
-            <p style={{ color: "darkblue" }}>Eligible for Defense Concession</p>
+            <p style={{ color: "green" }}>Eligible for Defense Concession</p>
+          )}
+          {data.eligibleConcession === "NOT ELIGIBLE" && (
+            <p style={{ color: "red" }}>Not Eligible for Any Concession</p>
           )}
           <Button variant="contained" onClick={bookingHandleClick}>
             Book Ticket
           </Button>
           <br />
           {bookingMessage && (
-            <p style={{ color: "darkblue" }}>Ticket Booked Successfully</p>
+            <p style={{ color: "green" }}>Ticket Booked Successfully</p>
           )}
         </form>
       </div>
