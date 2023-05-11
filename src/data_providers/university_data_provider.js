@@ -195,10 +195,7 @@ async function addStudent(name, age, roll) {
   await studentList.methods
     .addStudent(name, age, roll)
     .send({ from: account, gas });
-  // const info = await studentList.methods.currentStudents("0x3c25a0d9ff8a879ae6a643f6ce26f770cb2f5e06bf4e80d9638b597af09f64a3").call();
-  // console.log(JSON.stringify(key, null, 4));
   const key = await studentList.methods.getStudentKey(name, age, roll).call();
-  // console.log(key);
   return key;
 }
 async function verifyStudentFromKey(key) {
@@ -207,7 +204,6 @@ async function verifyStudentFromKey(key) {
   const verificationStatus = await studentList.methods
     .currentStudents(key)
     .call();
-  // console.log(verificationStatus);
   return verificationStatus;
 }
 

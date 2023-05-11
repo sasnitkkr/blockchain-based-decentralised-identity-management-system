@@ -22,9 +22,7 @@ const DefenseOps = (props) => {
   const [rank, setRank] = useState("");
   const [message, setMessage] = useState();
   const addEmployeeJS = async () => {
-    // console.log(name, age, roll);
     try {
-      // setMessage("");
       const key = await addEmployee(id, rank);
       setId("");
       setRank("");
@@ -35,9 +33,7 @@ const DefenseOps = (props) => {
     }
   };
   const removeEmployeeJS = async () => {
-    // console.log(name, age, roll);
     try {
-      // setMessage("");
       await removeEmployee(id, rank);
       setId("");
       setRank("");
@@ -49,9 +45,6 @@ const DefenseOps = (props) => {
   };
   const verifyEmployeeJS = async () => {
     const emp = await verifyEmployee(id, rank);
-    // console.log("-----------------------");
-    // console.log(typeof(status));
-    // console.log("---------------1--------");
     if (emp.empId !== "") setMessage("Employee exists");
     else setMessage("Employee doesn't exist");
     setId("");
@@ -74,7 +67,6 @@ const DefenseOps = (props) => {
           <form>
             <Grid container spacing={1}>
               <Grid xs={12} sm={6} item>
-                {/* <InputLabel id="empRank">EmpId</InputLabel> */}
                 <TextField
                   name="id"
                   onChange={(e) => setId(e.target.value)}
@@ -88,7 +80,6 @@ const DefenseOps = (props) => {
                 />
               </Grid>
               <Grid xs={12} sm={6} item>
-                {/* <InputLabel id="empRank">Rank</InputLabel> */}
                 <TextField
                   required
                   name="rank"

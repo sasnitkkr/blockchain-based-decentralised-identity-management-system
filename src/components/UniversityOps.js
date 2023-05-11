@@ -9,8 +9,6 @@ import {
 } from "@mui/material";
 import Navbar from "./Navbar";
 import { hashString } from "./../utils/hashUtils";
-// import web3 from '../web3';
-// import univContract from '../eth/helper/univContract';
 import {
   addStudent,
   verifyStudent,
@@ -22,14 +20,10 @@ const UniversityOps = (props) => {
   const [name, setName] = useState();
   const [age, setAge] = useState();
   const [roll, setRoll] = useState();
-  // const [verificationStatus, setVerificationStatus] = useState(2);
   const [message, setMessage] = useState();
   const addStudentJS = async () => {
-    // console.log(name, age, roll);
     try {
-      // setMessage("");
       const key = await addStudent(name, age, roll);
-      // console.log(key);
       setName("");
       setAge("");
       setRoll("");
@@ -40,9 +34,7 @@ const UniversityOps = (props) => {
     }
   };
   const removeStudentJS = async () => {
-    // console.log(name, age, roll);
     try {
-      // setMessage("");
       await removeStudent(name, age, roll);
       setName("");
       setAge("");
@@ -56,7 +48,6 @@ const UniversityOps = (props) => {
   const verifyStudentJS = async () => {
     try {
       const status = await verifyStudent(name, age, roll);
-      // setErrorMessage("e1");
       console.log("-----------------------");
       console.log(status);
       console.log("-----------------------");
@@ -97,7 +88,6 @@ const UniversityOps = (props) => {
                   variant="outlined"
                   fullWidth
                   id="fullWidth"
-                  //   fullWidth='true'
                   label="Enter Name"
                   placeholder="Enter Name to add student"
                 />
@@ -113,7 +103,6 @@ const UniversityOps = (props) => {
                   variant="outlined"
                   fullWidth
                   id="fullWidth"
-                  //   fullWidth='true'
                   label="Enter Age"
                   placeholder="Enter age to add student"
                 />
@@ -129,7 +118,6 @@ const UniversityOps = (props) => {
                   variant="outlined"
                   fullWidth
                   id="fullWidth"
-                  //   fullWidth='true'
                   label="Enter Roll Number"
                   placeholder="Enter Roll No.to add student"
                 />
@@ -139,7 +127,6 @@ const UniversityOps = (props) => {
                   onClick={addStudentJS}
                   variant="contained"
                   color="primary"
-                  //   fullWidth='true'
                   id="fullWidth"
                   fullWidth
                 >
@@ -151,7 +138,6 @@ const UniversityOps = (props) => {
                   onClick={removeStudentJS}
                   variant="contained"
                   color="primary"
-                  //   fullWidth='true'
                   id="fullWidth"
                   fullWidth
                 >
@@ -165,20 +151,9 @@ const UniversityOps = (props) => {
                   color="primary"
                   fullWidth
                 >
-                  {/* fullwidth='true'> */}
                   Check Enrollment Status
                 </Button>
               </Grid>
-              {/* {verificationStatus === 1 && (
-                <Typography
-                  component="p"
-                  variant="body2"
-                  color="textSecondary"
-                  style={{ color: "green" }}
-                >
-                  Student is enrolled
-                </Typography>
-              )} */}
               {message && (
                 <Typography
                   component="p"
@@ -186,43 +161,12 @@ const UniversityOps = (props) => {
                   color="textSecondary"
                   style={{
                     color: "blue",
-                    wordBreak: "break-all"
+                    wordBreak: "break-all",
                   }}
-                  // width="50%"
                 >
                   {message}
                 </Typography>
               )}
-              {/* {verificationStatus === 0 && (
-                <Typography
-                  component="p"
-                  variant="body2"
-                  color="textSecondary"
-                  style={{ color: "red" }}
-                >
-                  Student is NOT enrolled
-                </Typography>
-              )}
-              {errorMessage === "success" && (
-                <Typography
-                  component="p"
-                  variant="body2"
-                  color="textSecondary"
-                  style={{ color: "green" }}
-                >
-                  Student enrollment successful
-                </Typography>
-              )}
-              {errorMessage !== "e1" && errorMessage !== "success" && (
-                <Typography
-                  component="p"
-                  variant="body2"
-                  color="textSecondary"
-                  style={{ color: "red" }}
-                >
-                  Student enrollment failed
-                </Typography>
-              )} */}
             </Grid>
           </form>
         </CardContent>

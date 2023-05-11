@@ -54,9 +54,6 @@ const Booking = (props) => {
     if (data.concession === "STUDENT") {
       const verificationStatus = await verifyStudentFromKey(data.rootId);
       console.log(verificationStatus);
-      // const currentUser = localStorage.getItem("currentUser");
-      // const rollNo = JSON.parse(localStorage.getItem(currentUser))["rollNo"];
-      // const students = JSON.parse(localStorage.getItem("students"));
       if (verificationStatus) {
         fare = (fare * 9) / 10;
         eligibleConcession = "STUDENT";
@@ -106,7 +103,6 @@ const Booking = (props) => {
         style={{
           width: "40%",
           backgroundColor: "#ffffff",
-          // boxShadow: "0px 0px 30px #111",
           padding: "25px",
           borderRadius: "10px",
           marginLeft: "50vw",
@@ -126,37 +122,8 @@ const Booking = (props) => {
           />
           <br />
           <br />
-          {/* <label htmlFor="source">Enter Your Source</label>
-          <br />
-          <Select
-            style={{ marginTop: "10px" }}
-            id="source"
-            label="source"
-            value={data.source}
-            onChange={handleChange}
-            name="source"
-          >
-            <MenuItem value="Kurukshetra">Kurukshetra</MenuItem>
-            <MenuItem value="Chandigarh">Chandigarh</MenuItem>
-            <MenuItem value="Delhi">Delhi</MenuItem>
-          </Select>
-          <br />
-          <label htmlFor="destination">Select Your Destination</label>
-          <br />
-          <Select
-            style={{ marginTop: "10px" }}
-            value={data.destination}
-            onChange={handleChange}
-            name="destination"
-            id="destination"
-          >
-            <MenuItem value="Kurukshetra">Kurukshetra</MenuItem>
-            <MenuItem value="Chandigarh">Chandigarh</MenuItem>
-            <MenuItem value="Delhi">Delhi</MenuItem>
-          </Select> */}
           <Grid container spacing={1}>
             <Grid xs={12} sm={6} item>
-              {/* <InputLabel id="empRank">EmpId</InputLabel> */}
               <TextField
                 required
                 name="source"
@@ -172,7 +139,6 @@ const Booking = (props) => {
               </TextField>
             </Grid>
             <Grid xs={12} sm={6} item>
-              {/* <InputLabel id="empRank">Rank</InputLabel> */}
               <TextField
                 required
                 name="destination"

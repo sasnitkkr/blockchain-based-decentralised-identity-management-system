@@ -1,21 +1,13 @@
 import { React, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Web3 from "web3";
-// import Home from './components/Home';
-import KycForm from "./components/KycForm";
 import Booking from "./components/Booking";
 import DefenseOps from "./components/DefenseOps";
 import UniversityOps from "./components/UniversityOps";
 import Navbar from "./components/Navbar";
 import { Home } from "./components/Home";
-// import CompleteMerkleTree from './components/MerkleTree';
-// const web3 = new Web3(Web3.givenProvider || "http://localhost:7545");
 
 const App = () => {
-  // useEffect(() => {
-  //   // web3.eth.getAccounts().then(console.log);
-  //   // OnLoadFunctions();
-  // }, []);
   const OnLoadFunctions = () => {
     window.addEventListener("load", async () => {
       // Wait for loading completion to avoid race conditions with web3 injection timing.
@@ -52,7 +44,6 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/kyc" element={<KycForm />} />
         <Route path="/defense" element={<DefenseOps />} />
         <Route path="/university" element={<UniversityOps />} />
         <Route path="/booking" element={<Booking />}></Route>
