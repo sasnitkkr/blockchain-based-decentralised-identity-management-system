@@ -18,15 +18,21 @@ import {
 } from "../data_providers/defense_data_provider";
 
 const DefenseOps = (props) => {
-  const [id, setId] = useState("");
+  const [name, setName] = useState("");
   const [rank, setRank] = useState("");
+  const [id, setId] = useState("");
+  const [textColor, setTextColor] = useState("purple");
   const [message, setMessage] = useState();
   const addEmployeeJS = async () => {
     try {
-      const key = await addEmployee(id, rank);
+      const key = await addEmployee(name, rank, id);
+      setName("");
       setId("");
       setRank("");
-      setMessage(`Enrollment Successful with key = ${key}`);
+      setTextColor("green");
+      setMessage(
+        `Enrollment Successful with private key = ${key}. Please keep the key safe with yourself.`
+      );
     } catch (err) {
       console.log(err.message);
       setMessage(err.message);
@@ -34,9 +40,11 @@ const DefenseOps = (props) => {
   };
   const removeEmployeeJS = async () => {
     try {
-      await removeEmployee(id, rank);
+      await removeEmployee(name, rank, id);
+      setName("");
       setId("");
       setRank("");
+      setTextColor("green");
       setMessage("Employee removed successfully");
     } catch (err) {
       console.log(err.message);
@@ -44,9 +52,15 @@ const DefenseOps = (props) => {
     }
   };
   const verifyEmployeeJS = async () => {
-    const emp = await verifyEmployee(id, rank);
-    if (emp.empId !== "") setMessage("Employee exists");
-    else setMessage("Employee doesn't exist");
+    const emp = await verifyEmployee(name, rank, id);
+    if (emp.empId !== "") {
+      setTextColor("green");
+      setMessage("Employee exists");
+    } else {
+      setTextColor("red");
+      setMessage("Employee doesn't exist");
+    }
+    setName("");
     setId("");
     setRank("");
   };
@@ -68,12 +82,12 @@ const DefenseOps = (props) => {
             <Grid container spacing={1}>
               <Grid xs={12} sm={6} item>
                 <TextField
-                  name="id"
-                  onChange={(e) => setId(e.target.value)}
+                  name="name"
+                  onChange={(e) => setName(e.target.value)}
                   type="text"
-                  value={id}
-                  placeholder="Enter employee id"
-                  label="Employee Id"
+                  value={name}
+                  placeholder="Enter employee name"
+                  label="Employee Name"
                   variant="outlined"
                   fullwidth="true"
                   required
@@ -95,6 +109,19 @@ const DefenseOps = (props) => {
                   <MenuItem value="1">COLONEL</MenuItem>
                   <MenuItem value="2">MAJOR GENERAL</MenuItem>
                 </TextField>
+              </Grid>
+              <Grid xs={12} sm={6} item>
+                <TextField
+                  name="id"
+                  onChange={(e) => setId(e.target.value)}
+                  type="text"
+                  value={id}
+                  placeholder="Enter employee id"
+                  label="Employee Id"
+                  variant="outlined"
+                  fullwidth="true"
+                  required
+                />
               </Grid>
               <Grid xs={12} item>
                 <Button
@@ -133,7 +160,7 @@ const DefenseOps = (props) => {
               component="p"
               variant="body2"
               color="textSecondary"
-              style={{ color: "blue", wordBreak: "break-all" }}
+              style={{ color: { textColor }, wordBreak: "break-all" }}
             >
               {message}
             </Typography>

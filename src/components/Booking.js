@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Navbar from "./Navbar";
 import { verifyStudentFromKeyAndId } from "../data_providers/university_data_provider";
 import { verifyEmployeeFromKeyAndId } from "../data_providers/defense_data_provider";
-import { Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 const Booking = (props) => {
   const coords = { Chandigarh: 0, Kurukshetra: 50, Delhi: 200 };
 
